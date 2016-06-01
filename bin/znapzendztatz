@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 
-# PERL5LIB  
+use lib qw(); # PERL5LIB
 use FindBin; use lib "$FindBin::Bin/../lib", "$FindBin::Bin/../thirdparty/lib/perl5"; # LIBDIR
 
 use Getopt::Long qw(:config posix_default no_ignore_case);
@@ -9,17 +9,23 @@ use Pod::Usage;
 use Mojo::Base -strict;
 use ZnapZend::Config;
 use ZnapZend::ZFS;
-
-my $zConfig = ZnapZend::Config->new();
+my $VERSION = '0.dev'; #VERSION
+my $zConfig;
 my $zZfs;
 my $zTime   = ZnapZend::Time->new();
 
 sub dumpStats {
     my $stats = shift;
+    my $tabs = shift;
 
-    print ' ' x (5 - length($stats->{usage})) . $stats->{usage};
-    print "   $stats->{last_snap}";
-    print "   $stats->{dataset}\n";
+    if (! $tabs) {
+       print ' ' x (5 - length($stats->{usage}));
+    }
+    print $stats->{usage};
+    print ($tabs ? "\t" : "   ");
+    print "$stats->{last_snap}";
+    print ($tabs ? "\t" : "   ");
+    print "$stats->{dataset}\n";
 }
 
 sub collectData {
@@ -39,9 +45,10 @@ sub collectData {
 sub main {
     my $opts = {};
 
-    GetOptions($opts, qw(H help|h recursive|r pfexec sudo man)) or exit 1;
+    GetOptions($opts, qw(H help|h recursive|r only-enabled pfexec sudo man)) or exit 1;
 
     $zZfs = ZnapZend::ZFS->new(pfexec => $opts->{pfexec}, sudo => $opts->{sudo});
+    $zConfig = ZnapZend::Config->new(pfexec => $opts->{pfexec}, sudo => $opts->{sudo});
 
     $opts->{help} && do {
         pod2usage(-exitval => 'NOEXIT');
@@ -53,12 +60,13 @@ sub main {
     };
     $opts->{man} && pod2usage(-exitstatus => 0, -verbose => 2);
 
-    my $backupSets = $zConfig->getBackupSet(pop @ARGV)
+    # MAYBE make $enabledOnly parameter public in Config.pm
+    my $backupSets = ($opts->{"only-enabled"} ? $zConfig->getBackupSetEnabled(pop @ARGV) : $zConfig->getBackupSet(pop @ARGV))
         or die "ERROR: cannot list backup config\n";
 
     #check if there is at least one valid backup set
     @$backupSets or die "ERROR: no valid znapzend setup found on source\n";
-    
+
     my $dummyTime = $zTime->createSnapshotTime(time, $backupSets->[0]->{tsformat});
 
     #print header
@@ -73,7 +81,7 @@ sub main {
 
         #source dataset
         for my $dataset (@$datasets){
-            dumpStats(collectData($dataset, $snapFilter));
+            dumpStats(collectData($dataset, $snapFilter), $opts->{H});
 
             #destination datasets
             for (keys %$backupSet){
@@ -87,10 +95,10 @@ sub main {
                 else{
                     my $dstDataSet = $dataset;
                     $dstDataSet =~ s/^$backupSet->{src}/$backupSet->{$key}/;
-                    dumpStats(collectData($dstDataSet, $snapFilter));
+                    dumpStats(collectData($dstDataSet, $snapFilter), $opts->{H});
                 }
             }
-              
+
         }
     }
     return 1;
@@ -110,8 +118,10 @@ znapzendztatz - znapzend statistics utility
 
 B<znapzendztatz> [I<options>...] [src_dataset]
 
- -H             do not print headers
+ -H             do not print headers and separate fields by a single tab
+                instead of arbitrary white space
  -r,--recursive show statistics for dataset and sub datasets
+ --only-enabled only show statistics for enabled datasets
  --pfexec       use 'pfexec' for commands
  --sudo         use 'sudo' for commands
  --man          show man-page and exit
@@ -151,4 +161,3 @@ S<Dominik Hassler E<lt>hadfl@cpan.orgE<gt>>
 2014-06-05 had Initial Version
 
 =cut
-

@@ -1,44 +1,44 @@
-ZnapZend 0.14.0
+ZnapZend 0.15.7
 ===============
 
 [![Build Status](https://travis-ci.org/oetiker/znapzend.svg?branch=master)](https://travis-ci.org/oetiker/znapzend)
 [![Coverage Status](https://img.shields.io/coveralls/oetiker/znapzend.svg)](https://coveralls.io/r/oetiker/znapzend?branch=master)
+[![Gitter](https://badges.gitter.im/oetiker/znapzend.svg)](https://gitter.im/oetiker/znapzend?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=body_badg
+e)
 
 ZnapZend is a ZFS centric backup tool. It relies on snapshot, send and
-receive todo its work. It has the built-in ability to to manage both local
+receive todo its work. It has the built-in ability to manage both local
 snapshots as well as remote copies by thining them out as time progresses.
 
 The ZnapZend configuration is stored as properties in the ZFS filesystem
 itself.
 
-Zetup Zimple
-------------
+Zetup Inztructionz
+------------------
 
-There are two ways to get going with znapzend. The way of the real sysadmin
-(as described below) or you can take the simple way out and download our
-prebuilt release.  It comes with all the perlmodules required for running
-znapzend with a copy of perl as old as 5.10.1:
+Follow these zimple inztructionz below to get a custom made copy of
+znapzend. Yes you need a compiler and stuff for this to work.
 
-```sh
-wget https://github.com/oetiker/znapzend/releases/download/v0.14.0/znapzend-prebuilt-0.14.0.tar.gz
-tar zxvf znapzend-prebuilt-0.14.0.tar.gz
-cp -rp znapzend-prebuilt-0.14.0 /opt/znapzend-0.14.0
-```
+On RedHat you get the necessaries with:
 
-Read on in the [Configuration](#configuration) Section.
+    yum install perl-core
 
-Zetup for Power Admins
-----------------------
+On Ubuntu / Debian with:
 
-On the other hand if you are the proud owner of a properly setup unix box
-with all the tools and trimmings for building stuff, follow these zimple
-inztructionz below to get a custom made copy of znapzend.
+    apt-get install perl
+
+On Solaris you may need the c compiler from Solaris Studio and gnu-make
+since the installed perl version is probably very old.
+
+On OmniOS/SmartOS you will need perl and gnu-make
+
+with that in place you can now utter:
 
 ```sh
-wget https://github.com/oetiker/znapzend/releases/download/v0.14.0/znapzend-0.14.0.tar.gz
-tar zxvf znapzend-0.14.0.tar.gz
-cd znapzend-0.14.0
-./configure --prefix=/opt/znapzend-0.14.0
+wget https://github.com/oetiker/znapzend/releases/download/v0.15.7/znapzend-0.15.7.tar.gz
+tar zxvf znapzend-0.15.7.tar.gz
+cd znapzend-0.15.7
+./configure --prefix=/opt/znapzend-0.15.7
 ```
 
 If configure finds anything noteworthy, it will tell you about it.  If any
@@ -50,6 +50,13 @@ make
 make install
 ```
 
+Optionally (but recommended) put symbolic links to the installed binaries in the
+system PATH.
+
+```sh
+for x in /opt/znapzend-0.15.7/bin/*; do ln -s $x /usr/local/bin; done
+```
+
 Configuration
 -------------
 
@@ -59,46 +66,28 @@ Make sure to configure password free login for ssh to the backup target host.
 Running
 -------
 
-The [znapzend](doc/znapzend.pod) demon is responsible for doing the actual backups. 
+The [znapzend](doc/znapzend.pod) demon is responsible for doing the actual backups.
 
 To see if your configuration is any good, run znapzend in noaction mode first.
 
 ```sh
-/opt/znapzend-0.14.0/bin/znapzend --noaction --debug
+znapzend --noaction --debug
 ```
 
 If you don't want to wait for the scheduler to actually schedule work, you can also force immediate action by calling
 
 ```sh
-/opt/znapzend-0.14.0/bin/znapzend --noaction --debug --runonce=<src_dataset>
-``` 
+znapzend --noaction --debug --runonce=<src_dataset>
+```
 
 then when you are happy with what you got, start it in daemon mode.
 
 ```sh
-/opt/znapzend-0.14.0/bin/znapzend --daemonize
+znapzend --daemonize
 ```
- 
+
 Best is to integrate znapzend into your system startup sequence, but you can also
-run it by hand.
-
-For solaris/illumos OSes you can import make configure install a znapzend
-service manifest by calling configure with the option
-```--enable-svcinstall=/var/svc/manifest/site```.  Since the manifest
-contains the absolute path the the znapzend install directory, it is not
-contained in the prebuilt version.  But you can get a copy from github and
-roll your own.
-
-```sh
-svccfg validate /var/svc/manifest/site/znapzend.xml
-svccfg import /var/svc/manifest/site/znapzend.xml
-```
-
-and then enable the service 
-
-```sh
-svcadm enable oep/znapzend
-```
+run it by hand. See the init/README.md for some inspiration.
 
 Statistics
 ----------
@@ -110,11 +99,12 @@ Support and Contributions
 -------------------------
 If you find a problem with znapzend, please open an Issue on GitHub.
 
-If you like to get in touch, you can find Dominik and Tobi on the IRC-Channel [#znapzend on irc.freenode.net](irc://irc.freenode.net/#znapzend)
+If you like to get in touch, come to [![Gitter](https://badges.gitter.im/oetiker/znapzend.svg)](https://gitter.im/oetiker/znapzend?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=body_badg
+e).
 
 And if you have a contribution, please send a pull request.
 
 Enjoy!
 
 Dominik Hassler & Tobi Oetiker
-2014-12-16
+2016-05-09

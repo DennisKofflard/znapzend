@@ -37,12 +37,14 @@ has logto           => sub { q{} };
 has pidfile         => sub { q{} };
 has defaultPidFile  => sub { q{/var/run/znapzend.pid} };
 has terminate       => sub { 0 };
+has autoCreation    => sub { 0 };
 
 has backupSets       => sub { [] };
 
 has zConfig => sub {
     my $self = shift;
-    ZnapZend::Config->new(debug => $self->debug, noaction => $self->noaction);
+    ZnapZend::Config->new(debug => $self->debug, noaction => $self->noaction,
+                          pfexec => $self->pfexec, sudo => $self->sudo);
 };
 
 has zZfs => sub {
@@ -51,7 +53,7 @@ has zZfs => sub {
         nodestroy => $self->nodestroy, oracleMode => $self->oracleMode,
         recvu => $self->recvu, connectTimeout => $self->connectTimeout,
         pfexec => $self->pfexec, sudo => $self->sudo,
-        zLog => $self->zLog);
+        zLog => $self->zLog,autoCreation => $self->autoCreation);
         
 };
 
@@ -95,7 +97,7 @@ has zLog => sub {
 my $killThemAll  = sub {
     my $self = shift;
 
-    $self->zLog->info('terminating znapzend...');
+    $self->zLog->info("terminating znapzend (PID=$$) ...");
     #set termination flag
     $self->terminate(1);
 
@@ -112,6 +114,8 @@ my $killThemAll  = sub {
         waitpid($backupSet->{send_pid}, WNOHANG)
             || kill(SIGKILL, $backupSet->{send_pid}) if $backupSet->{send_pid};
     }
+
+    $self->zLog->info("znapzend (PID=$$) terminated.");
     exit 0;
 };
 
@@ -133,10 +137,16 @@ my $refreshBackupPlans = sub {
 
             #check if destination exists (i.e. is valid) otherwise recheck as dst might be online, now 
             if (!$backupSet->{"dst_$key" . '_valid'}){
+                my $dstPath = $backupSet->{"dst_$key"};
+                if ($self->autoCreation) {
+                    # in auto create mode we are happy if
+                    # the pool exists
+                    $dstPath =~ s{/.+}{};
+                }
                 $backupSet->{"dst_$key" . '_valid'}
-                    = $self->zZfs->dataSetExists($backupSet->{"dst_$key"}) or do {
+                    = $self->zZfs->dataSetExists($dstPath) or do {
 
-                    $self->zLog->warn("destination '" . $backupSet->{"dst_$key"}
+                    $self->zLog->warn("destination '" . $dstPath
                         . "' does not exist or is offline. will be rechecked every run...");
                 };
             }
@@ -174,10 +184,17 @@ my $sendRecvCleanup = sub {
 
         #recheck non valid dst as t might be online, now 
         if (!$backupSet->{$dst . '_valid'}){
+            my $dstPath = $backupSet->{"$dst"};
+            if ($self->autoCreation) {
+                # in auto create mode we are happy if
+                # the pool exists
+                $dstPath =~ s{/.+}{};
+            }
+            
             $backupSet->{$dst. '_valid'}
-                = $self->zZfs->dataSetExists($backupSet->{$dst}) or do {
+                = $self->zZfs->dataSetExists($dstPath) or do {
 
-                $self->zLog->warn("destination '" . $backupSet->{$dst}
+                $self->zLog->warn("destination '" . $dstPath
                     . "' does not exist or is offline. ignoring it for this round...");
                 next;
             };
@@ -516,18 +533,23 @@ my $daemonize = sub {
         # send warnings and die messages to log
         $SIG{__WARN__} = sub { $self->zLog->warn(shift) };
         $SIG{__DIE__}  = sub { return if $^S; $self->zLog->error(shift); exit 1 };
+
     }
 };
 
 sub start {
     my $self = shift;
 
+    $self->zLog->info("znapzend (PID=$$) starting up ...");
+
     $self->$daemonize if $self->daemonize;
 
     # set signal handlers
-    $SIG{INT}  = sub { $self->$killThemAll; };
-    $SIG{TERM} = sub { $self->$killThemAll; };
+    $SIG{INT}  = sub { $self->zLog->debug('SIGINT received.'); $self->$killThemAll; };
+    $SIG{TERM} = sub { $self->zLog->debug('SIGTERM received.'); $self->$killThemAll; };
     $SIG{HUP}  = sub {
+        $self->zLog->debug('SIGHUP received.');
+
         #remove active timers from ioloop
         for my $backupSet (@{$self->backupSets}){
             Mojo::IOLoop->remove($backupSet->{timer_id}) if $backupSet->{timer_id};
@@ -535,11 +557,20 @@ sub start {
         $self->$refreshBackupPlans($self->runonce);
         $self->$createWorkers;
     };
-
+    
     $self->$refreshBackupPlans($self->runonce);
 
     $self->$createWorkers;
 
+    $self->zLog->info("znapzend (PID=$$) initialized -- resuming normal operations.");
+
+    # if Mojo is running with EV, signals will not be received if the IO loop
+    # is sleeping so lets activate it periodically    
+### RM_COMM_4_TEST ###  # remove ### RM_COMM_4_TEST ### comments for testing purpose.
+### RM_COMM_4_TEST ###  if (0) {
+    Mojo::IOLoop->recurring(1 => sub { }) if not $self->runonce;
+### RM_COMM_4_TEST ###  }
+    
     #start eventloop
     Mojo::IOLoop->start;
 

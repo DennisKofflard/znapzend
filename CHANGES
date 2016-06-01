@@ -1,3 +1,574 @@
+commit 5533b20687e33eee25e4c63885b02334a24bf0d1
+Author: Tobias Oetiker <tobi@oetiker.ch>
+Date:   Fri May 6 10:57:49 2016 +0200
+
+    * add autocreation support to main code
+    * fix some mor $_ instances
+
+commit 93130b6116b6c20539ae8def9ae89cad6b709a0f
+Author: Tobias Oetiker <tobi@oetiker.ch>
+Date:   Mon May 2 15:34:49 2016 +0200
+
+    do not try to be smart about compression and encryption let the user set this on his own in .ssh/config
+
+commit 56fe85ed02123ac99978e2008283f9d4680c949d
+Author: Tobias Oetiker <tobi@oetiker.ch>
+Date:   Fri May 6 08:46:40 2016 +0200
+
+    * fix variable re-assignements
+    * better test for nonexisting destination snapshots.
+
+commit 83b16d2651a4e5b22b05a4e6ddae491f27a5d836
+Author: Tobias Oetiker <tobi@oetiker.ch>
+Date:   Thu Apr 28 15:36:50 2016 +0200
+
+    add option back to cli
+
+commit efd5b697f9be925b71bfb2e22843351102fe0a65
+Author: Tobias Oetiker <tobi@oetiker.ch>
+Date:   Thu Apr 28 15:35:36 2016 +0200
+
+    must keep the option in
+
+commit 48514f86d29144e4563babc212a114718ceef50d
+Author: Tobias Oetiker <tobi@oetiker.ch>
+Date:   Thu Apr 28 15:27:27 2016 +0200
+
+    attempt a fix for autocreation
+
+commit f81f973f73681700920c2e0402a75aaf28be7105
+Author: Tobias Oetiker <tobi@oetiker.ch>
+Date:   Fri Apr 22 13:52:53 2016 +0200
+
+    go gitter
+
+commit 8600ee9818b09a715b67b0a91ef1d47b72808d80
+Author: Tobias Oetiker <tobi@oetiker.ch>
+Date:   Mon Apr 11 08:28:50 2016 +0200
+
+    rerelease
+
+commit 12d917d1d4c5d2dfec876eab13ecf0ee9ad25129
+Author: Tobias Oetiker <tobi@oetiker.ch>
+Date:   Mon Apr 11 08:28:32 2016 +0200
+
+    revert error message fix
+
+commit 6efd70f911f724724044119f17bf7040b49f0554
+Author: Tobias Oetiker <tobi@oetiker.ch>
+Date:   Mon Apr 11 08:26:06 2016 +0200
+
+    prep for 0.15.5
+
+commit a054a4b72da1a6369df4d61bf2c43913c3eaf184
+Author: Tobias Oetiker <tobi@oetiker.ch>
+Date:   Mon Apr 11 08:25:31 2016 +0200
+
+    fix regression from autoCreate feature in mbuffer mode
+
+commit 85a7dc95d1ecce55d2976d27be00c34d72455ee1
+Author: Tobias Oetiker <tobi@oetiker.ch>
+Date:   Tue Apr 5 19:35:23 2016 +0200
+
+    0.15.4
+
+commit 648a016ebbad8a04a13da9fe3dcb522e46c5019f
+Author: Tobias Oetiker <tobi@oetiker.ch>
+Date:   Tue Apr 5 18:56:52 2016 +0200
+
+    0.15.4
+
+commit 44ed50a8dd67cb4dc5489a5474bc21e4fbcf7121
+Author: Tobias Oetiker <tobi@oetiker.ch>
+Date:   Tue Apr 5 18:56:18 2016 +0200
+
+    be more careful in testing the environment
+
+commit 06ddae478277fba10feed6fc2eeabba686e6688a
+Author: RageLtMan <rageltman [at] sempervictus>
+Date:   Mon Apr 4 00:23:24 2016 -0400
+
+    sendRecvSnapshots - don't cut dstDataSet in-place
+    
+    The current code in sendRecvSnapshots splits the dstDataSet var
+    early on in the execution chain to provide logging output and the
+    remote variable contents. This removes the remote information from
+    dstDataSet which is then passed to listSnapshots without the
+    remote data and the attempt to list the last snapshot occurs on the
+    local host, not over SSH on the remote target.
+    
+    Address the issue by creating a dstDataSetPath variable to hold the
+    stripped target path while retaining the original dstDataSet with
+    the remote information attached for lastAndCommonSnapshots to use
+    in listSnapshots.
+    
+    -----
+    
+    Testing:
+      4 hosts with waterfall replication topologies in debug mode
+
+commit 2e905cbbd753956f373a3bd318794f8e25e11818
+Author: sylvain-ilm <sylvain@ilm-informatique.fr>
+Date:   Mon Apr 4 12:22:35 2016 +0200
+
+    Separate fields by tabs when using -H
+
+commit 7555b59dbf7d87dc6a909495e50b6a7d2661cb96
+Author: sylvain-ilm <sylvain@ilm-informatique.fr>
+Date:   Fri Apr 1 18:24:07 2016 +0200
+
+    added --only-enabled option in znapzendztatz to filter out disabled datasets
+
+commit 8ec92aec894d508c00d0cd0cb58a67b2e16c6939
+Author: tisc0 <tiscarabee@gmail.com>
+Date:   Tue Mar 22 15:58:18 2016 +0100
+
+    Update README.md
+    
+    Simple typo. Thanks for that project guyz !
+
+commit 175b4e93c1cd4b2ed329f0e0f93ac2146e45fd4b
+Author: Wouter van Os <wouter0100@gmail.com>
+Date:   Thu Mar 17 21:52:40 2016 +0100
+
+    Updated exception to exclude remote when local
+
+commit c46e0fe0df8a75040b2fccd7b147748b2f00b10f
+Author: Wouter van Os <wouter0100@gmail.com>
+Date:   Sat Mar 12 17:50:33 2016 +0100
+
+    Added documentation about the new --autoCreation and createDataSet
+
+commit 1345311ea4e37e743f3c3beec9380f1677dd9e44
+Author: Wouter van Os <wouter0100@gmail.com>
+Date:   Sat Mar 12 15:36:20 2016 +0100
+
+    Made an exception message more clear with extra data and info
+
+commit edef36a5486e93e08971420b018846a201be1828
+Author: Wouter van Os <wouter0100@gmail.com>
+Date:   Sat Mar 12 15:28:05 2016 +0100
+
+    Improved logs for the createDataSet sub and removed null-check
+
+commit 4cd300427ab49322339dbdd1fc4b0ddf1e70ab2b
+Author: Wouter van Os <wouter0100@gmail.com>
+Date:   Sat Mar 12 12:48:41 2016 +0100
+
+    Create datasets on dst when it doesn't exist
+    
+    It checks f the `$dstDataSet` exists, if not,
+    it attempts to create it. When creation is succes,
+    the script continues. When it fails, the script
+    stops and continues to the next dataset.
+
+commit 3494e80e37a1ce70f02e27a34d69e9bdc9f6af69
+Author: Tobias Oetiker <tobi@oetiker.ch>
+Date:   Fri Mar 4 14:22:48 2016 +0100
+
+    actually disable the code in testmode!
+
+commit e50d481d9900ba2a16ce1338ae5ed7b18cad1278
+Author: Tobias Oetiker <tobi@oetiker.ch>
+Date:   Fri Mar 4 13:33:18 2016 +0100
+
+    we should add the recurring trick even when not daemonized ...
+
+commit 5bc7cc5bfdfe80de984493f42233e95dde1c5868
+Author: Tobias Oetiker <tobi@oetiker.ch>
+Date:   Mon Feb 29 14:09:55 2016 +0100
+
+    our test scripts do not like the recurring event to enable signal handling in connection with EV
+
+commit b32074bf044eb915b42c87bb00bfc2166a48a18a
+Author: Martin Rueegg <martin.rueegg@metaworx.ch>
+Date:   Fri Feb 26 14:51:30 2016 +0100
+
+    wake the io loop periodically to make sure signals get processed even when running with EV
+
+commit da82e77790423ee7bf347d26230edaad1e073149
+Author: Tobias Oetiker <tobi@oetiker.ch>
+Date:   Thu Feb 25 15:05:18 2016 +0100
+
+    updated for release
+
+commit 56ee5792ff201286802aee58ea3480605d40f519
+Author: Tobias Oetiker <tobi@oetiker.ch>
+Date:   Thu Feb 25 15:00:38 2016 +0100
+
+    release 0.15.3
+
+commit 547476e6bdb97ecf4fba3cf9f9c3b26e0397006e
+Author: martin-rueegg <martin.rueegg@metaworx.ch>
+Date:   Tue Feb 23 10:08:46 2016 +0100
+
+    additional [info] and [debug] messages
+
+commit d6f65c4e1ae3e2ff244671690a64da90e1752bbf
+Author: Sebastian Wiedenroth <wiedi@frubar.net>
+Date:   Wed Feb 24 22:30:24 2016 +0100
+
+    fix bashism introduced in thirdparty makefile (comparing with ==)
+
+commit fd824808b3ee86dcd213811ddec97c1b583e3457
+Author: Tobias Oetiker <tobi@oetiker.ch>
+Date:   Thu Feb 25 14:58:48 2016 +0100
+
+    simplifie module setup
+
+commit 48e22271edc1184effec296e0a3d2027b506db19
+Author: Tobias Oetiker <tobi@oetiker.ch>
+Date:   Mon Feb 15 17:02:29 2016 +0100
+
+    fix wording
+
+commit d07418b2887d35c6bcb0e4eb1d8f1f013c6e44b1
+Author: Tobias Oetiker <tobi@oetiker.ch>
+Date:   Mon Feb 15 17:00:51 2016 +0100
+
+    fix readme again
+
+commit d16fd713038665dc966b6b4d3fbea27290ca78dd
+Author: Tobias Oetiker <tobi@oetiker.ch>
+Date:   Mon Feb 15 16:53:04 2016 +0100
+
+    0.15.2
+
+commit 8f6280d4d7609da6cfd3c77d95c7173cda9fd06f
+Author: Tobias Oetiker <tobi@oetiker.ch>
+Date:   Mon Feb 15 16:52:00 2016 +0100
+
+    add init files to distribution and update README.md
+
+commit 454c67d424b64ec6d3391a8bc57ae70eb54c7d58
+Author: Tobias Oetiker <tobi@oetiker.ch>
+Date:   Sun Feb 14 23:09:16 2016 +0100
+
+    respinn to align tag with tar
+
+commit c18ba0e90e88bd73affaff36aa977db4b63eab13
+Author: Tobias Oetiker <tobi@oetiker.ch>
+Date:   Sun Feb 14 22:25:50 2016 +0100
+
+    fix build script
+
+commit a9975bfcc66c494a08df5f9643e287aa2fe4bd5d
+Author: Tobias Oetiker <tobi@oetiker.ch>
+Date:   Sun Feb 14 18:31:32 2016 +0100
+
+    0.15.0
+
+commit 75dc7f6b4b3e6953cb76a732afc35de6fbba8a54
+Author: Tobias Oetiker <tobi@oetiker.ch>
+Date:   Sun Feb 14 18:12:14 2016 +0100
+
+    rebuild doc every time
+
+commit 3a4b87c58da206e6043881c266bcecb97c9c1a25
+Author: Tobias Oetiker <tobi@oetiker.ch>
+Date:   Sun Feb 14 18:12:05 2016 +0100
+
+    rebuild doc every time
+
+commit 1216daf8d7cadb626f56cf554e8fca35626611b8
+Author: Tobias Oetiker <tobi@oetiker.ch>
+Date:   Sun Feb 14 18:11:25 2016 +0100
+
+    rebuild documentation
+
+commit 73af9cdb8c43be3529d7fb9581ba3f854f5c5f16
+Author: Tobias Oetiker <tobi@oetiker.ch>
+Date:   Sun Feb 14 18:08:56 2016 +0100
+
+    switch to new automake setup. include mini cpan locally
+    this allows to build znapzend without internet access.
+
+commit 89632f3191ad5e0f8c858832b3ba4e033ee5c3b6
+Author: Anton Eliasson <devel@antoneliasson.se>
+Date:   Sun Feb 7 15:53:34 2016 +0100
+
+    get-thirdparty-modules: do check certificates
+
+commit aaaf12cfb25ca18b6d0c28419cc263d2faab5ca8
+Author: Anton Eliasson <devel@antoneliasson.se>
+Date:   Sun Feb 7 16:08:30 2016 +0100
+
+    Drop Alias line from systemd service unit
+    
+    Specifying the same name as the service file's actual filename is
+    redundant, and also causes problems such as
+    
+        Failed to execute operation: Invalid argument
+    
+    when enabling the service.
+
+commit 5d7941357ef804cb268614965d3d1c65712f9fc6
+Author: Anton Eliasson <devel@antoneliasson.se>
+Date:   Sun Feb 7 16:05:55 2016 +0100
+
+    Adjust ExecStart line to closer match real scenarios
+    
+    /usr/bin belongs to system packages, so znapzend is unlikely to be
+    installed there at the moment.
+    
+    syslog::daemon is the default logging destination, so specifying it only
+    adds clutter to the command line.
+
+commit 07cd9b0dc50c70acc2a8a018633722a9914af183
+Author: Anton Eliasson <devel@antoneliasson.se>
+Date:   Sun Feb 7 16:13:07 2016 +0100
+
+    Drop full path from znapzend command line
+    
+    Assuming suitable symbolic links were created as described in section
+    "Zetup Inztructionz", the full path is not necessary.
+
+commit 5165c82202f9b24292ba82256aa2e8ff4e1700ce
+Author: Anton Eliasson <devel@antoneliasson.se>
+Date:   Sun Feb 7 16:05:33 2016 +0100
+
+    Advise creating symbolic links after installation
+
+commit ece7c6f533833f7f255ba9582ad893afe3463347
+Author: Anton Eliasson <devel@antoneliasson.se>
+Date:   Sun Feb 7 15:55:17 2016 +0100
+
+    Advise putting systemd service file into /etc
+    
+    /lib/systemd/system is for installed *packages*. /etc/systemd/system is
+    for local configuration.
+
+commit ca80b0f9b6eca3537cdec5d70f6db04190713b4c
+Author: Sebastian Wiedenroth <wiedi@frubar.net>
+Date:   Sat Jan 16 12:27:28 2016 +0100
+
+    Comparing with == is a bashism
+
+commit 94258f94a91ab1d57a460535768c4d81dfe04d10
+Author: morph027 <morphsen@gmx.com>
+Date:   Mon Nov 30 18:55:56 2015 +0100
+
+    added README for init scripts
+
+commit 7b06c28e9a18cbae25abb5ce5f8e4134567b35cf
+Author: morph027 <morphsen@gmx.com>
+Date:   Mon Nov 30 15:44:41 2015 +0100
+
+    added systemd unit file
+
+commit 58c87714e63448588dcc62a28e4e6de5487ce84f
+Author: morph027 <morphsen@gmx.com>
+Date:   Mon Nov 23 19:00:40 2015 +0100
+
+    moving checkinstall README into subfolder
+
+commit cd5330c97d9b024fc8b5af32f2435d757a254c52
+Author: morph027 <morphsen@gmx.com>
+Date:   Fri Nov 20 16:33:11 2015 +0100
+
+    added subdir
+
+commit 8cc6641d8f9e59291933ae6b475b2e69b4d15a5e
+Author: morph027 <morphsen@gmx.com>
+Date:   Fri Nov 20 15:10:23 2015 +0100
+
+    added script to create packages
+
+commit e59b5d660153b3629c1bbfe096ab2d4586ae2cfb
+Author: Sebastian Wiedenroth <wiedi@frubar.net>
+Date:   Thu Nov 26 00:48:04 2015 +0100
+
+    Extra slash confuses OSX, makes it forget to install lib/ZnapZend.pm
+
+commit 4b8b81a5c80f293da4583d19f82cf3b384e5d82a
+Author: Tobias Oetiker <tobi@oetiker.ch>
+Date:   Fri Nov 27 08:12:15 2015 +0100
+
+    don't try to install perl stuff if there is none fix for #178
+
+commit 734d42f757b5fbde4b7b8a337268a323a5329571
+Author: James Marsh <mail@jamesmarsh.net>
+Date:   Tue Nov 24 15:15:47 2015 +0000
+
+    Fix sudo/pfexec use when initialising ZnapZend::Config.
+
+commit 35665b2d792413773e3b10db7c11308cc8a36273
+Author: James Marsh <mail@jamesmarsh.net>
+Date:   Tue Nov 24 13:12:21 2015 +0000
+
+    Fix sudo/pfexec use when querying config.
+    
+    refreshBackupPlans calls $self->zConfig->getBackupSetEnabled($dataSet)
+    but zConfig was not initialised with sudo/pfexec features and hence
+    there were errors calling the zfs command.
+
+commit 18003d7427773b0962590786dac39a9f98da7835
+Author: Tobias Oetiker <tobi@oetiker.ch>
+Date:   Thu Nov 19 14:40:30 2015 +0100
+
+    multi line error messages are bad news
+
+commit e1ef500dc9366408c243101776e395740ce018fd
+Author: Dominik Hassler <hadfl@cpan.org>
+Date:   Tue Oct 13 07:41:15 2015 +0200
+
+    - fix uninitialized string if executable is on localhost
+
+commit e69cbd38564bd45ee0b8834a34a9790102a3ae18
+Author: Tobias Oetiker <tobi@oetiker.ch>
+Date:   Mon Oct 12 09:01:13 2015 +0200
+
+    improve first sentence
+
+commit bc2eaa02889e3680054d7206cda79bc33615d754
+Author: Tobias Oetiker <tobi@oetiker.ch>
+Date:   Mon Oct 12 08:53:47 2015 +0200
+
+    update changes
+
+commit 55f64968158ebd80c5541a29486174acaa2ce814
+Author: Tobias Oetiker <tobi@oetiker.ch>
+Date:   Mon Oct 12 08:50:53 2015 +0200
+
+    update docs
+
+commit 55b62e48b9899dde7d119a27cc00ec6a7bb82ecc
+Author: Tobias Oetiker <tobi@oetiker.ch>
+Date:   Mon Oct 12 08:47:33 2015 +0200
+
+    prep 0.14.1
+
+commit 3b6e05081fe9fbf184de23201599fe257bac2940
+Author: JMoVS <JMoVS@users.noreply.github.com>
+Date:   Sun Aug 23 11:33:54 2015 +0200
+
+    Include note on lower-case requirement for DST fields
+    
+    - Added a little sentence to clarify that DST names can only contain lower-case letters
+
+commit 84a472a61fa5868670c9a62e2b229a32b7992b2a
+Author: Dominik Hassler <hadfl@cpan.org>
+Date:   Mon May 18 10:37:53 2015 +0200
+
+    - don't override log message event handler as this will ignore minimal log level
+
+commit ff94c5a39debd6b53d8ce82778670c7c49dae035
+Author: Dominik Hassler <hadfl@cpan.org>
+Date:   Sat May 16 16:58:29 2015 +0200
+
+    - replace \w in regexp
+
+commit 9bbdeb915d1c8586230139728fd73974e18433a6
+Author: Dominik Hassler <hadfl@cpan.org>
+Date:   Sat May 16 10:30:43 2015 +0200
+
+    - allow '.' and '-' for zfs user properties
+
+commit 230fd13e7f4e776fa7082ac68ba78920e58c4d5d
+Author: Tobias Oetiker <tobi@oetiker.ch>
+Date:   Thu May 14 14:27:34 2015 +0200
+
+    return is not necessary
+
+commit b7979b1ec42f4abb2ee4ca0f75162429b821555e
+Author: Tobias Oetiker <tobi@oetiker.ch>
+Date:   Thu May 14 14:26:22 2015 +0200
+
+    added a note on HUP
+
+commit 79672d45ac3debd20c5864afe1d260940d46abb6
+Author: Dominik Hassler <hadfl@cpan.org>
+Date:   Mon Mar 16 13:25:37 2015 +0100
+
+    - use option '-t filesystem,volume' to get datasets
+
+commit c6bc39579eb202bb4f220a50fae4f260ef426fec
+Author: Dominik Hassler <hadfl@cpan.org>
+Date:   Mon Mar 16 11:48:41 2015 +0100
+
+    - fix 'zfs list' if listsnapshots zpool property is on
+
+commit 502209ca62b739fe6b8e238dd23a7c2f8bfad6a1
+Author: Dominik Hassler <hadfl@cpan.org>
+Date:   Fri Jan 23 16:32:58 2015 +0100
+
+    - recheck every run
+
+commit 3db59230000ab91d3f010ec13c66957fdbbc539a
+Author: Dominik Hassler <hadfl@cpan.org>
+Date:   Fri Jan 23 15:55:48 2015 +0100
+
+    - zfs fix for testing
+
+commit 09309d360228f6e89dcf6ba93994aa73aeac89c2
+Author: Dominik Hassler <hadfl@cpan.org>
+Date:   Fri Jan 23 14:56:49 2015 +0100
+
+    - typo
+
+commit ba18b2fb838ec03127304821bb3efd849feb2346
+Author: Dominik Hassler <hadfl@cpan.org>
+Date:   Fri Jan 23 14:50:19 2015 +0100
+
+    - recheck if destination has been offline
+
+commit 1830bceb63a70f716d88bcccb63eed869ee0605c
+Author: Tobias Oetiker <tobi@oetiker.ch>
+Date:   Wed Jan 21 09:17:17 2015 +0100
+
+    install the right coveralls module
+
+commit 3e28074e958957edb16529e2af9e8067f9c51d2e
+Author: Tobias Oetiker <tobi@oetiker.ch>
+Date:   Wed Jan 21 09:11:35 2015 +0100
+
+    find cover script
+
+commit 453581c640c890c63b2a0883c86d31e554f0d6fc
+Author: Tobias Oetiker <tobi@oetiker.ch>
+Date:   Wed Jan 21 09:11:27 2015 +0100
+
+    latest perl version
+
+commit f25a95dcafee7b41a86ef429139d0966d25b3418
+Author: Tobias Oetiker <tobi@oetiker.ch>
+Date:   Wed Jan 21 08:58:49 2015 +0100
+
+    yet another try
+
+commit 69189ddb4f85f9d6a746bccd0ba85228b11c815b
+Author: Tobias Oetiker <tobi@oetiker.ch>
+Date:   Wed Jan 21 08:38:44 2015 +0100
+
+    another try at getting travis happy again
+
+commit 9806a0a4aac32a061049cd27e029c0837f42f8c1
+Author: Tobias Oetiker <tobi@oetiker.ch>
+Date:   Wed Jan 21 08:31:16 2015 +0100
+
+    more bits to make travis work with the new settings
+
+commit 3f46a0eb8ca22c3585501c9907d432487cba59af
+Author: Tobias Oetiker <tobi@oetiker.ch>
+Date:   Wed Jan 21 08:19:55 2015 +0100
+
+    update to new build system
+
+commit 75857808ab5fc1030ac294c4e3634d4b5ef323c9
+Author: Tobias Oetiker <tobi@oetiker.ch>
+Date:   Wed Jan 21 00:45:41 2015 +0100
+
+    make configure make approach more standards conform
+    * no thirdparty dir in install tree
+    * build missing perl modules automatically
+    * no FindBin in installed version of the program
+
+commit 4cdbcdeea15a1ea35ad9ab218b28393d0ee60882
+Author: Tobias Oetiker <tobi@oetiker.ch>
+Date:   Sun Jan 18 14:27:41 2015 +0100
+
+    sync configure
+
 commit 890a7500693ac895d7ade73e37ed2418f16a1bfa
 Author: Tobias Oetiker <tobi@oetiker.ch>
 Date:   Sun Jan 18 14:26:05 2015 +0100

@@ -1,19 +1,19 @@
 #!/usr/bin/env perl
 
-# PERL5LIB
+use lib qw(); # PERL5LIB
 use FindBin; use lib "$FindBin::Bin/../lib", "$FindBin::Bin/../thirdparty/lib/perl5"; # LIBDIR
 
 use Getopt::Long qw(:config posix_default no_ignore_case);
 use Pod::Usage;
 
 use ZnapZend;
-
+my $VERSION = '0.dev'; #VERSION
 my $opts = {};
 my %featureMap = map { $_ => 1 } qw(oracleMode recvu pfexec sudo);
 
 sub main {
     GetOptions($opts, qw(help|h man debug|d noaction|n nodestroy features=s),
-        qw(daemonize pidfile=s logto=s loglevel=s runonce=s connectTimeout=s)) or exit 1;
+        qw(daemonize pidfile=s logto=s loglevel=s runonce=s connectTimeout=s autoCreation)) or exit 1;
 
     #split all features into individual options
     if ($opts->{features}){
@@ -23,7 +23,7 @@ sub main {
         }
         delete $opts->{features};
     }
-    
+
     $opts->{help} && do {
         pod2usage(-exitval => 'NOEXIT');
 
@@ -56,7 +56,7 @@ znapzend - znapzend daemon
 B<znapzend> [I<options>...]
 
  --man              show man-page and exit
- -h,--help          display this help and exit 
+ -h,--help          display this help and exit
  -d,--debug         print debug messages to STDERR
  -n,--noaction      run in simulation mode. does no changes to the filesystem
  --nodestroy        does all changes to the filesystem except destroy
@@ -67,6 +67,7 @@ B<znapzend> [I<options>...]
  --runonce=x        run one round on source dataset x
  --features=x       comma separated list of features to be enabled
  --connectTimeout=x sets the ConnectTimeout for ssh commands
+ --autoCreation     automatically create dataset on dest if it not exists
 
 =head1 DESCRIPTION
 
@@ -97,7 +98,7 @@ send logs out to either syslog or a logfile. Default is to send logs to
 B<syslog::daemon> when runing daemonized. When running in debug mode, the
 logs will go to STDERR by default.
 
-Examples: 
+Examples:
 
  --logto=/var/log/znapzend.log
  --logto=syslog::daemon
@@ -168,6 +169,10 @@ use 'sudo' for zfs commands (e.g. when running znapzend as non-priviledged user)
 
 sets the ssh connection timeout (in seconds)
 
+=item B<--autoCreation>
+
+Automatically create a dataset on a destination host if it's not there yet.
+
 =back
 
 =head1 EXAMPLE
@@ -210,4 +215,3 @@ S<Dominik Hassler E<lt>hadfl@cpan.orgE<gt>>
  2014-05-30 had Initial Version
 
 =cut
-
